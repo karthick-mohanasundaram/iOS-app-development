@@ -1,0 +1,491 @@
+ericsson:
+  nic_assignments:
+  - &HP_GEN9_nic_assignment
+    control0: "0000:06:00.0"
+    control1: "0000:06:00.1"
+    data0:    "0000:08:00.0"
+    data1:    "0000:08:00.1"
+    storage0: "0000:87:00.0"
+    storage1: "0000:87:00.1"
+  reservedHugepages:
+  - &reservedHugepages
+    - owner: ovs
+      size: 2MB
+      count: 1024
+    - owner: vm
+      size: 1GB
+      count: auto
+  - &reservedHugepages_with_vcic
+    - owner: ovs
+      size: 2MB
+      count: 1024
+    - owner: vm
+      size: 1GB
+      count: auto
+    - owner: vcic
+      size: 1GB
+      count: 30
+  - &reservedHugepages_with_vfuel
+    - owner: ovs
+      size: 2MB
+      count: 1024
+    - owner: vm
+      size: 1GB
+      count: auto
+    - owner: vfuel
+      size: 1GB
+      count: 3
+  - &reservedHugepages_with_vcic_and_vfuel
+    - owner: ovs
+      size: 2MB
+      count: 1024
+    - owner: vm
+      size: 1GB
+      count: auto
+    - owner: vcic
+      size: 1GB
+      count: 30
+    - owner: vfuel
+      size: 1GB
+      count: 3
+  reservedCPUs:
+  - &reservedCPUs
+    - owner: vm
+      count: auto
+    - owner: ovs
+      count: auto
+  - &reservedCPUs_with_vcic
+    - owner: vm
+      count: auto
+    - owner: ovs
+      count: auto
+    - owner: vcic
+      count: auto
+  - &reservedCPUs_with_vfuel
+    - owner: vm
+      count: auto
+    - owner: ovs
+      count: auto
+    - owner: vfuel
+      count: auto
+  - &reservedCPUs_with_vcic_and_vfuel
+    - owner: vm
+      count: auto
+    - owner: ovs
+      count: auto
+    - owner: vcic
+      count: 6
+    - owner: vfuel
+      count: 2
+  reservedDisks:
+  - &reservedDisk_for_vcic
+    - owner: vcic
+      size: 260G
+    - owner: vcic_backup
+      size: 52G
+  - &reservedDisk_for_vfuel
+    - owner: vfuel
+      size: 60G
+  - &reservedDisk_for_vcic_and_vfuel
+    - owner: vcic
+      size: 260G
+    - owner: vcic_backup
+      size: 52G
+    - owner: vfuel
+      size: 60G
+  region_name: GCH
+  timezone: Europe/Dublin
+  compute_io_scheduler: deadline
+  compute_os_reserved_mem: {64: 6, 128: 6, 192: 6, 256: 6, 320: 6, 384: 6, 448: 6, 512: 6}
+  global_ovs_dpdk_io_driver: uio_pci_generic
+  neutron:
+    mgmt_vip: 192.168.2.15
+    mgmt_subnetmask: 24
+    l2_vlan_start: 50
+    l2_vlan_end: 3581
+    neutron_config_yaml_file: neutron_ericsson_extreme.yaml
+  nova:
+    disk_cachemodes: file=directsync,block=none
+    enable_nova_quotas: true
+    force_config_drive: true
+    vms_use_raw_images: false
+  cmha:
+    fence_compute_before_evacuation: true
+    try_to_recover_compute_after_evacuation: true
+  hw_switches:
+    initial_setup: extreme
+    switching_scheme_yaml_file: 2_x670v_switch.yaml
+    cabling_scheme_yaml_file: 2_x670v_hp.yaml
+  cloud_mgmt:
+    nbi:
+      name: tenant_3582
+      tag: 3582
+      cidr: 10.0.82.0/27
+      start: 10.0.82.4
+      end: 10.0.82.30
+      gateway: 10.0.82.1
+      ip: 10.0.82.5
+    sbi:
+      name: tenant_3583
+      tag: 3583
+      cidr: 10.0.83.0/27
+      start: 10.0.83.4
+      end: 10.0.83.30
+      gateway: 10.0.83.1
+      ip: 10.0.83.5
+  shelf:
+    -
+      id: 0
+      shelf_mgmt:
+        ip: 10.0.3.100
+        name: subrack_ctrl_sp
+        passwd: ericsson
+        username: admin
+      blade:
+        -
+          id: 1
+          nic_assignment: *HP_GEN9_nic_assignment
+          reservedHugepages: *reservedHugepages_with_vcic
+          reservedCPUs: *reservedCPUs_with_vcic
+          reservedDisk: *reservedDisk_for_vcic
+          virt:
+            cic:
+              id: 1
+        -
+          id: 2
+          nic_assignment: *HP_GEN9_nic_assignment
+          reservedHugepages: *reservedHugepages_with_vcic
+          reservedCPUs: *reservedCPUs_with_vcic
+          reservedDisk: *reservedDisk_for_vcic
+          virt:
+            cic:
+              id: 2
+        -
+          id: 3
+          nic_assignment: *HP_GEN9_nic_assignment
+          reservedHugepages: *reservedHugepages_with_vcic
+          reservedCPUs: *reservedCPUs_with_vcic
+          reservedDisk: *reservedDisk_for_vcic
+          virt:
+            cic:
+              id: 3
+        -
+          id: 4
+          nic_assignment: *HP_GEN9_nic_assignment
+          reservedHugepages: *reservedHugepages_with_vfuel
+          reservedCPUs: *reservedCPUs_with_vfuel
+          reservedDisk: *reservedDisk_for_vfuel
+          vfuel: ""
+        -
+          id: 5
+          nic_assignment: *HP_GEN9_nic_assignment
+          reservedHugepages: *reservedHugepages_with_vfuel
+          reservedCPUs: *reservedCPUs_with_vfuel
+          reservedDisk: *reservedDisk_for_vfuel
+        -
+          id: 6
+          nic_assignment: *HP_GEN9_nic_assignment
+          reservedHugepages: *reservedHugepages
+          reservedCPUs: *reservedCPUs
+        -
+          id: 9
+          nic_assignment: *HP_GEN9_nic_assignment
+          reservedHugepages: *reservedHugepages
+          reservedCPUs: *reservedCPUs
+        -
+          id: 10
+          nic_assignment: *HP_GEN9_nic_assignment
+          reservedHugepages: *reservedHugepages
+          reservedCPUs: *reservedCPUs
+        -
+          id: 11
+          nic_assignment: *HP_GEN9_nic_assignment
+          reservedHugepages: *reservedHugepages
+          reservedCPUs: *reservedCPUs
+        -
+          id: 12
+          nic_assignment: *HP_GEN9_nic_assignment
+          reservedHugepages: *reservedHugepages
+          reservedCPUs: *reservedCPUs
+  host_networking:
+    template_yaml_file: host_nw_hp.yaml
+  networks:
+    -
+      name: sw_ctrl_vip
+      tag: 6
+      enable_ntp: true
+      loopback: true
+      ipforwarding: false
+    -
+      name: pod_sw_ctrl_isc
+      tag: 4
+      loopback: false
+      ipforwarding: true
+    -
+      name: stor_sw_ctrl_isc
+      tag: 5
+      loopback: false
+      ipforwarding: true
+    -
+      name: ctrl_mlag_isc
+      tag: 7
+    -
+      name: tenant_mlag_isc
+      tag: 20
+    -
+      name: subrack_ctrl_sp
+      mos_name: subrack_ctrl_sp
+      tag: 3
+      vr: subrack_om
+      ipforwarding: true
+      cidr: 10.0.3.11/25
+      start: 10.0.3.12
+      end: 10.0.3.17
+    -
+      name: subrack_om_sp
+      tag: 23
+      vr: subrack_om
+      cidr: 10.0.23.0/29
+      gateway: 10.0.23.1
+      ipforwarding: true
+    -
+      name: cee_om_sp
+      mos_name: public
+      tag: 22
+      enable_ntp: true
+      cidr: 10.0.22.0/25
+      start: 10.0.22.10
+      end: 10.0.22.24
+      gateway: 10.0.22.1
+    -
+      name: cee_ctrl_sp
+      mos_name: management
+      tag: 2
+      enable_ntp: true
+      cidr: 192.168.2.11/24
+      start: 192.168.2.20
+      end: 192.168.2.254
+    -
+      name: fuel_ctrl_sp
+      mos_name: fuelweb_admin
+      cidr: 192.168.0.11/24
+      dhcp_pool_start: 192.168.0.20
+      dhcp_pool_end: 192.168.0.253
+      gateway: 192.168.0.254
+      dns: 192.168.0.100
+    -
+      name: iscsi_san_pda
+      mos_name: iscsi-left
+      tag: 11
+      cidr: 192.168.11.0/24
+      start: 192.168.11.20
+      end: 192.168.11.254
+    -
+      name: iscsi_san_pdb
+      mos_name: iscsi-right
+      tag: 12
+      cidr: 192.168.12.0/24
+      start: 192.168.12.20
+      end: 192.168.12.254
+    -
+      name: swift_san_sp
+      mos_name: swift
+      tag: 13
+      cidr: 192.168.13.0/29
+      start: 192.168.13.1
+      end: 192.168.13.6
+    -
+      name: migration_san_sp
+      mos_name: migration
+      tag: 14
+      cidr: 192.168.14.0/24
+      start: 192.168.14.20
+      end: 192.168.14.254
+    -
+      name: internal
+      cidr: 192.168.111.0/24
+      gateway: 192.168.111.1
+  ntp_config:
+    servers: [10.51.40.102, 10.51.40.103, 10.51.40.101]
+    orphan_mode_stratum: 7
+    authentication: None
+    authentication_upstream_group_key: 1
+    authentication_upstream_group_password: upstream_group_password
+    authentication_ericsson_group_key: 10
+    authentication_ericsson_group_password: ericsson_password
+  legaltext:
+    local: "Attention! Unauthorized local access is strictly prohibited!\n"
+    remote: "\nAttention! Unauthorized remote access is strictly prohibited!\n\n"
+  storage:
+    centralized:
+      type: EMC2
+      cee_managed: true
+      hw_type: VNX5400
+      storagepool_name: cinderpool
+      mgmt_ip_A: 192.168.2.12
+      mgmt_ip_B: 192.168.2.13
+      emc_admin:
+        user: admin
+        passwd: ericsson
+      iscsi_ports:
+        -
+          port: 0
+          SP: A
+          name: iscsi_san_pda
+          target_ip: 192.168.11.1
+          tagged: true
+        -
+          port: 1
+          SP: A
+          name: iscsi_san_pdb
+          target_ip: 192.168.12.1
+          tagged: true
+        -
+          port: 0
+          SP: B
+          name: iscsi_san_pda
+          target_ip: 192.168.11.2
+          tagged: true
+        -
+          port: 1
+          SP: B
+          name: iscsi_san_pdb
+          target_ip: 192.168.12.2
+          tagged: true
+    localdisks:
+      cic:
+        os_size: 51200
+        logs_size: 40960
+        mysql_size: 61440
+        mongo_size: 71680
+      compute:
+        os_size: 51200
+        logs_size: 40960
+  glance:
+    image_cache_max_size: 5368709120
+    enable_glance_image_cache: true
+  swift:
+    swift_on_backend_storage:
+      type: centralized
+      activation_mode: automatic
+      lun_size: 50GiB
+  idam:
+    ldap:
+      basedn: dc=cee,dc=ericsson,dc=com
+      rootdn: cn=admin
+      rootpw: ''
+      anonymous_binddn: cn=anon
+      anonymous_bindpwd: ''
+      manager_binddn: cn=manager
+      manager_bindpwd: ''
+      sync_binddn: cn=sync
+      sync_bindpwd: ''
+    userlist:
+    - ceeadm
+    - cmha
+    - ceebackup
+    - ceecore
+    users:
+      ceebackup:
+        idam_tag:
+        - admin
+        passwd: '##Ce3B4ckuP##'
+      ceeadm:
+        idam_tag:
+        - none
+        passwd: '##Ce3Adm1N##'
+        openstack_access:
+          os_tenant: admin
+          os_create_account: false
+          os_password: admin
+          os_username: admin
+          os_role: admin
+      cmha:
+        idam_tag:
+        - none
+      ceecore:
+        idam_tag:
+        - none
+  vnx-log-fetcher:
+    mysql:
+      password: ''
+    vnx:
+      password: ''
+  log-aggregator:
+      relp_port: 20514
+      udp_port: 10514
+      tcp_port: 514
+  security:
+    openssl:
+      ciphersuites: 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384'
+      protocols: TLSv1.2
+    gnutls:
+      priority: 'NONE:+SUITEB128:+SUITEB192:+VERS-TLS-1.2'
+    haproxy:
+      sslprotocols: no-sslv3 no-tlsv10 no-tlsv11
+      sslrate: 100
+      sslconns: 40
+    nbi:
+      atlas:
+        hostname: gch2.atlas.ericsson.se
+        certfilename: atlas.pem
+        cafilename: cacert.pem
+      controller:
+        hostname: gch2.ctrl.ericsson.se
+        certfilename: ctrl.pem
+        cafilename: cacert.pem
+  reduced_footprint:
+    monitoring_data_collection: false
+  logging:
+    crashes: local
+    forward_to_fuel: false
+    forward_to_controller: false
+    forward_to_external: false
+    external_server_ip:
+    external_server_port:
+    local_on_controller: true
+    local_on_compute: true
+  zabbix_cee_user:
+    zabbix_user_group: ZABBIX_USER_GROUP
+    zabbix_user: ZABBIX_USER
+    zabbix_password: ZABBIX_PASSWORD
+  fuel-plugins:
+    -
+       name: zabbix_monitoring
+       config_attributes:
+          password: CEEZ@bbIxUs3R#
+          db_password: CEEZ@bbIxDbpwd#
+    -
+       name: ericsson_css
+    -
+       name: ericsson_hcframework
+    -
+       name: ericsson_idam
+    -
+       name: ericsson_ldap
+    -
+       name: ericsson_ndevalarm
+    -
+       name: ericsson_openstack_config
+    -
+       name: ericsson_pm
+    -
+       name: ericsson_service_supervision
+    -
+       name: ericsson_watchmen
+    -
+       name: ericsson_logging
+    -
+       name: ericsson_cmha
+    -
+       name: ericsson_tls
+    -
+       name: ericsson_infra_setup
+    -
+       name: ericsson_cee_backup
+    -
+       name: ericsson_ntp
+    -
+       name: ericsson_extreme
+    -
+       name: ericsson_vnx

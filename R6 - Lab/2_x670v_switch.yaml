@@ -1,0 +1,204 @@
+  switching:
+    -
+      name: SWA_X670V
+
+      device_id: 1
+      switch_type: TOR_SWITCH
+      model: SummitX670V
+      firmware_version: 15.6.1.4
+      auth_info:
+        username: network_admin
+        password: NetworkAdmin
+      usage: mixed
+      mgmt_ip: 192.168.6.1/32
+      mgmt_loopback_vlan: sw_ctrl_vip
+      number_of_ports: 64
+      shared_secret: DoNotUseForProdEnvironment
+      mgmt_vrrp_config:
+        -
+          vip: 192.168.2.1/24
+          access_ip: 192.168.2.2/24
+          is_master: true
+          vlan: cee_ctrl_sp
+        -
+          vip: 10.0.3.1/25
+          is_master: true
+          vlan: subrack_ctrl_sp
+        -
+          vip: 10.0.22.1/25
+
+          is_master: true
+          vlan: subrack_om_sp
+      storage_config:
+        vlans:
+          -
+            name: iscsi_san_pda
+            tagged: true
+          -
+            name: swift_san_sp
+            tagged: true
+          -
+            name: migration_san_sp
+            tagged: true
+      external_storage_config:
+        vlans:
+          -
+            name: iscsi_san_pda
+            tagged: true
+      mgmt_config:
+        vlans:
+          -
+            name: cee_ctrl_sp
+            tagged: true
+          -
+            name: subrack_ctrl_sp
+            ip: 10.0.3.2/25
+            tagged: true
+      bgw_config:
+        -
+          id: 1
+          vlans:
+            -
+              name: cee_om_sp
+              tagged: true
+              ip: 10.0.22.5/25
+
+            -
+              name: subrack_om_sp
+              tagged: true
+              ip: 10.0.22.6/25
+
+      isc_config:
+        vlans:
+          -
+            name: pod_sw_ctrl_isc
+            tagged: true
+            ip: 192.168.4.1/30
+          -
+            name: tenant_mlag_isc
+            tagged: true
+            ip: 10.0.20.1/30
+          -
+            name: swift_san_sp
+            tagged: true
+          -
+            name: migration_san_sp
+            tagged: true
+          -
+            name: cee_om_sp
+            tagged: true
+          -
+            name: subrack_om_sp
+            tagged: true
+      resources:
+        virtual_routers: 189
+        vrrp_instances: 127
+      snmp_config:
+        user_name: eqm
+        authentication_password: EqmPassWd
+        encryption_password: privEqmPasswd
+        snmp_engine_id: 1
+    -
+      name: SWB_X670V
+
+      device_id: 2
+      switch_type: TOR_SWITCH
+      model: SummitX670V
+      firmware_version: 15.6.1.4
+      auth_info:
+        username: network_admin
+        password: NetworkAdmin
+      usage: mixed
+      mgmt_ip: 192.168.6.2/32
+      mgmt_loopback_vlan: sw_ctrl_vip
+      number_of_ports: 64
+      shared_secret: DoNotUseForProdEnvironment
+      mgmt_vrrp_config:
+        -
+          vip: 192.168.2.1/24
+          access_ip: 192.168.2.3/24
+          is_master: false
+          vlan: cee_ctrl_sp
+        -
+          vip: 10.0.3.1/25
+          is_master: false
+          vlan: subrack_ctrl_sp
+        -
+          vip: 10.0.22.1/25
+
+          is_master: false
+          vlan: subrack_om_sp
+      storage_config:
+        vlans:
+          -
+            name: iscsi_san_pdb
+            tagged: true
+          -
+            name: swift_san_sp
+            tagged: true
+          -
+            name: migration_san_sp
+            tagged: true
+      external_storage_config:
+        vlans:
+          -
+            name: iscsi_san_pdb
+            tagged: true
+      mgmt_config:
+        vlans:
+          -
+            name: cee_ctrl_sp
+            tagged: true
+          -
+            name: subrack_ctrl_sp
+            ip: 10.0.3.3/25
+            tagged: true
+      bgw_config:
+        -
+          id: 2
+          vlans:
+            -
+              name: cee_om_sp
+              tagged: true
+              ip: 10.0.22.5/25
+
+            -
+              name: subrack_om_sp
+              tagged: true
+              ip: 10.0.22.6/25
+
+      isc_config:
+        vlans:
+          -
+            name: pod_sw_ctrl_isc
+            tagged: true
+            ip: 192.168.4.2/30
+          -
+            name: tenant_mlag_isc
+            tagged: true
+            ip: 10.0.20.2/30
+          -
+            name: swift_san_sp
+            tagged: true
+          -
+            name: migration_san_sp
+            tagged: true
+          -
+            name: cee_om_sp
+            tagged: true
+          -
+            name: subrack_om_sp
+            tagged: true
+      resources:
+        virtual_routers: 189
+        vrrp_instances: 127
+      snmp_config:
+        user_name: eqm
+        authentication_password: EqmPassWd
+        encryption_password: privEqmPasswd
+        snmp_engine_id: 2
+  switch_config:
+    restore_conf_prefix: restore_
+    restore_conf_version: 15B_R4
+    active_config_name: ericsson_active
+    backup_config_name: ericsson_backup
